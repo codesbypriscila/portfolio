@@ -1,0 +1,210 @@
+/*
+ * The book area is placed in the section's design pixels (--u). Wide screens: a 409 × 409 spread
+ * page on each side of the spine, as in the design. Portrait: one page at a time, almost full width.
+ */
+.area {
+  --area-x: 15;
+  --area-y: 214;
+  --area-w: 360;
+  --area-h: 360;
+  --controls-x: 0;
+  --controls-y: 430;
+  --controls-w: 360;
+
+  position: absolute;
+  top: calc(var(--area-y) * var(--u));
+  left: calc(var(--area-x) * var(--u));
+  width: calc(var(--area-w) * var(--u));
+  height: calc(var(--area-h) * var(--u));
+}
+
+@media (min-aspect-ratio: 1 / 1) {
+  .area {
+    --area-x: 311;
+    --area-y: 266;
+    --area-w: 818;
+    --area-h: 409;
+    --controls-x: 209;
+    --controls-y: 478;
+    --controls-w: 400;
+  }
+}
+
+.controls {
+  top: calc(var(--controls-y) * var(--u));
+  left: calc(var(--controls-x) * var(--u));
+  width: calc(var(--controls-w) * var(--u));
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.floor {
+  position: absolute;
+  bottom: calc(-34 * var(--u));
+  left: 50%;
+  height: calc(38 * var(--u));
+  border-radius: 50%;
+  background: rgb(56 37 31 / 0.25);
+  filter: blur(calc(28 * var(--u)));
+  transform: translateX(-50%);
+}
+
+.tilt {
+  position: relative;
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+}
+
+.book {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  outline: none;
+  transform-style: preserve-3d;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.book:active {
+  cursor: grabbing;
+}
+
+.book:focus-visible {
+  outline: 2px solid var(--ink-dim);
+  outline-offset: 12px;
+  border-radius: 8px;
+}
+
+/* Leather boards, a little larger than the paper, like the design's open book. */
+.board {
+  position: absolute;
+  top: -6px;
+  bottom: -5px;
+  overflow: hidden;
+  background: #4a2e22;
+  box-shadow: 0 calc(26 * var(--u)) calc(50 * var(--u)) rgb(56 37 31 / 0.3);
+  transform: translateZ(-2px);
+}
+
+.board img {
+  object-fit: cover;
+}
+
+.boardRight {
+  right: -6px;
+  border-radius: 0 8px 8px 0;
+}
+
+.boardLeft {
+  left: -6px;
+  border-radius: 8px 0 0 8px;
+}
+
+.page {
+  position: absolute;
+  top: 0;
+}
+
+.scaled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+.castClip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cast {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 33%;
+}
+
+.castRight {
+  background: linear-gradient(to right, rgb(0 0 0 / 0.45), transparent);
+}
+
+.castLeft {
+  background: linear-gradient(to left, rgb(0 0 0 / 0.45), transparent);
+}
+
+/* Lifted corner hinting that the page can be turned. */
+.peel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(to top left, transparent 50%, #fffdf8 50%);
+  box-shadow: -3px -3px 8px rgb(0 0 0 / 0.2);
+  transform-origin: bottom right;
+  transition: transform 500ms var(--ease-out);
+  pointer-events: none;
+}
+
+.book:hover .peel {
+  transform: scale(1.8);
+}
+
+.turning {
+  position: absolute;
+  top: 0;
+  transform-style: preserve-3d;
+}
+
+/* Turning leaf (TurningLeaf.tsx) */
+
+.leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+.strip {
+  position: absolute;
+  top: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+.face {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgb(255 255 255 / 0), rgb(255 255 255 / 0.7), rgb(255 255 255 / 0));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peel {
+    transition: none;
+  }
+}

@@ -1,0 +1,191 @@
+/* A page is authored at 409 × 409 px (the design's page) and scaled as a whole by the book. */
+.page {
+  --p: 1px;
+
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  color: var(--ink);
+}
+
+.paper {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  border-radius: 0 6px 6px 0;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Placed from the page's top-left corner with --x/--y, in page pixels; .sized adds --w/--h. */
+.at {
+  position: absolute;
+  top: calc(var(--y) * var(--p));
+  left: calc(var(--x) * var(--p));
+}
+
+.sized {
+  width: calc(var(--w) * var(--p));
+  height: calc(var(--h) * var(--p));
+}
+
+.tilted {
+  transform: rotate(var(--r));
+  transform-origin: top left;
+}
+
+/* Text */
+
+.text {
+  width: calc(320 * var(--p));
+  color: var(--ink);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  margin: calc(10 * var(--p)) 0 0;
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: calc(34 * var(--p));
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.041em;
+  color: var(--ink);
+}
+
+.script {
+  font-family: var(--font-script), cursive;
+  font-size: calc(40 * var(--p));
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--ink-script);
+}
+
+.age {
+  margin: calc(8 * var(--p)) 0 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(13 * var(--p));
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink-dim);
+}
+
+.divider {
+  display: block;
+  width: calc(36 * var(--p));
+  height: calc(2 * var(--p));
+  margin: calc(var(--space, 14) * var(--p)) 0;
+  background: var(--gold);
+}
+
+.paragraph {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(12.5 * var(--p));
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.bio {
+  line-height: 1.55;
+}
+
+.sources {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--p));
+  margin: calc(18 * var(--p)) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sourceName {
+  display: block;
+  margin-bottom: calc(2 * var(--p));
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: calc(18 * var(--p));
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.033em;
+}
+
+.sourceText {
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(12 * var(--p));
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink-dim);
+}
+
+.thanks {
+  margin: 0;
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: calc(20 * var(--p));
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink-script);
+}
+
+/* Pictures and stickers */
+
+.image {
+  display: block;
+  object-fit: contain;
+}
+
+.print {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(10 * var(--p));
+  margin: 0;
+  padding: calc(12 * var(--p)) calc(12 * var(--p)) calc(14 * var(--p));
+  background: #fcfaf6;
+  box-shadow: 0 calc(8 * var(--p)) calc(18 * var(--p)) rgb(56 37 31 / 0.2);
+}
+
+.printImage {
+  display: block;
+  width: calc(var(--iw) * var(--p));
+  height: calc(var(--ih) * var(--p));
+  object-fit: cover;
+}
+
+.caption {
+  font-family: var(--font-script), cursive;
+  font-size: calc(30 * var(--p));
+  line-height: 1;
+  color: var(--ink-script);
+}
+
+.tape {
+  background: rgb(242 184 203 / 0.78);
+}
+
+.noteTape {
+  background: rgb(225 212 197 / 0.8);
+}
+
+.note {
+  display: grid;
+  place-items: center;
+  padding: calc(12 * var(--p)) calc(10 * var(--p));
+  background: #f6c9d7;
+  box-shadow: 0 calc(5 * var(--p)) calc(10 * var(--p)) rgb(56 37 31 / 0.18);
+  font-family: var(--font-script), cursive;
+  font-size: calc(20 * var(--p));
+  line-height: 1;
+  text-align: center;
+  white-space: pre-line;
+  color: var(--ink-script);
+}
+

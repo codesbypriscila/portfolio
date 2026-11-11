@@ -1,0 +1,46 @@
+.wrap {
+  --title-top: 112;
+  --title-size: 34;
+  --script-size: 54;
+  --script-overlap: 10;
+
+  position: absolute;
+  top: calc(var(--title-top) * var(--u));
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.title {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: calc(var(--title-size) * var(--u));
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.048em;
+  white-space: nowrap;
+  color: var(--ink-strong);
+}
+
+.script {
+  position: absolute;
+  right: 0.12em;
+  bottom: calc(100% - var(--script-overlap) * var(--u));
+  font-family: var(--font-script), cursive;
+  font-size: calc(var(--script-size) * var(--u));
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--ink-script);
+}
+
+@media (min-aspect-ratio: 1 / 1) {
+  .wrap {
+    --title-top: 150;
+    --title-size: 56;
+    --script-size: 82;
+    --script-overlap: 16;
+  }
+}

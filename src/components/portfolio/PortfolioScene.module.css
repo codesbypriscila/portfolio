@@ -1,0 +1,32 @@
+/* --u is one design pixel: every measure in the scene scales with it. */
+.scene {
+  --stage-width: 390;
+  --stage-height: 844;
+  --origin-x: 195;
+  --origin-y: 720;
+  --u: min(calc(100vw / var(--stage-width)), calc(100dvh / var(--stage-height)));
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--paper);
+  scroll-snap-align: start;
+}
+
+.stage {
+  position: relative;
+  flex: none;
+  width: calc(var(--stage-width) * var(--u));
+  height: calc(var(--stage-height) * var(--u));
+}
+
+@media (min-aspect-ratio: 1 / 1) {
+  .scene {
+    --stage-width: 1440;
+    --stage-height: 900;
+    --origin-x: 720;
+    --origin-y: 660;
+  }
+}

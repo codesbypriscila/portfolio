@@ -1,0 +1,45 @@
+/* --u is one design pixel: the section keeps the 1440×900 frame (390×844 on portrait screens) and scales with it. */
+.scene {
+  --stage-width: 390;
+  --stage-height: 844;
+  --u: min(calc(100vw / var(--stage-width)), calc(100dvh / var(--stage-height)));
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--paper);
+  scroll-snap-align: start;
+}
+
+.stage {
+  position: relative;
+  flex: none;
+  width: calc(var(--stage-width) * var(--u));
+  height: calc(var(--stage-height) * var(--u));
+}
+
+@media (min-aspect-ratio: 1 / 1) {
+  .scene {
+    --stage-width: 1440;
+    --stage-height: 900;
+  }
+}
+
+/* Long sections on portrait screens: content stacks under the title and the page scrolls. */
+@media (max-aspect-ratio: 1 / 1) {
+  .flow {
+    --u: calc(100vw / var(--stage-width));
+
+    height: auto;
+    min-height: 100dvh;
+    align-items: flex-start;
+  }
+
+  .flow .stage {
+    height: auto;
+    min-height: calc(var(--stage-height) * var(--u));
+    padding: calc(190 * var(--u)) calc(24 * var(--u)) calc(64 * var(--u));
+  }
+}

@@ -1,0 +1,46 @@
+:root {
+  --paper: #f6f1ea;
+  --ink: #38251f;
+  --ink-strong: #3e2a22;
+  --ink-script: #4e3a33;
+  --ink-dim: #6e5a50;
+  --taupe: #b6a08c;
+  --sand: #e1d4c5;
+  --gold: #b8965a;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.22, 1.25, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink-dim);
+  outline-offset: 4px;
+  border-radius: 6px;
+}

@@ -1,0 +1,214 @@
+/*
+ * A floating bar: frosted paper with a soft shadow, so the sections scrolling underneath never clash
+ * with the links. Sized in the same design pixel as the sections (--n).
+ */
+.nav {
+  --n: calc(100vw / 390);
+
+  position: fixed;
+  z-index: 10;
+  top: calc(10 * var(--n));
+  left: calc(10 * var(--n));
+  right: calc(10 * var(--n));
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--n));
+  padding: calc(4 * var(--n)) calc(6 * var(--n)) calc(4 * var(--n)) calc(14 * var(--n));
+  border: 1px solid rgb(56 37 31 / 0.08);
+  border-radius: 999px;
+  background: rgb(246 241 234 / 0.78);
+  box-shadow: 0 calc(10 * var(--n)) calc(30 * var(--n)) rgb(56 37 31 / 0.1);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+}
+
+.brand {
+  display: none;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, #000 85%, transparent);
+}
+
+.main::-webkit-scrollbar {
+  display: none;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--n));
+  width: max-content;
+  margin: 0;
+  padding: 0 calc(16 * var(--n)) 0 0;
+  list-style: none;
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(4 * var(--n));
+  padding-top: calc(6 * var(--n));
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(12.5 * var(--n));
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  color: var(--ink-dim);
+  text-decoration: none;
+  transition: color 200ms linear;
+}
+
+.link:hover,
+.link[aria-current="true"] {
+  color: var(--ink);
+}
+
+.dot {
+  width: calc(4 * var(--n));
+  height: calc(4 * var(--n));
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 200ms linear;
+}
+
+.link[aria-current="true"] .dot {
+  opacity: 1;
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: calc(12 * var(--n));
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  padding: calc(2 * var(--n));
+  border: 1px solid rgb(56 37 31 / 0.2);
+  border-radius: 999px;
+}
+
+.lang {
+  display: grid;
+  place-items: center;
+  width: calc(32 * var(--n));
+  height: calc(26 * var(--n));
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(10.5 * var(--n));
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition:
+    background-color 200ms linear,
+    color 200ms linear;
+}
+
+.lang[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.contact {
+  display: none;
+  align-items: center;
+  gap: calc(10 * var(--n));
+  padding: calc(10 * var(--n)) calc(22 * var(--n));
+  border: 1px solid rgb(56 37 31 / 0.4);
+  border-radius: 999px;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(14 * var(--n));
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    background-color 200ms linear,
+    color 200ms linear;
+}
+
+.contact:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.contactDot {
+  width: calc(6 * var(--n));
+  height: calc(6 * var(--n));
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+@media (min-aspect-ratio: 1 / 1) {
+  .nav {
+    --n: min(calc(100vw / 1440), calc(100dvh / 900));
+
+    top: calc(12 * var(--n));
+    left: calc(24 * var(--n));
+    right: calc(24 * var(--n));
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: calc(24 * var(--n));
+    padding: calc(6 * var(--n)) calc(8 * var(--n)) calc(6 * var(--n)) calc(28 * var(--n));
+  }
+
+  .brand {
+    display: block;
+    justify-self: start;
+    font-family: var(--font-script), cursive;
+    font-size: calc(30 * var(--n));
+    line-height: 1;
+    color: var(--ink-script);
+    text-decoration: none;
+  }
+
+  .main {
+    overflow: visible;
+    mask-image: none;
+  }
+
+  .links {
+    gap: calc(40 * var(--n));
+    padding: 0;
+  }
+
+  .link {
+    gap: calc(6 * var(--n));
+    padding-top: calc(8 * var(--n));
+    font-size: calc(14 * var(--n));
+  }
+
+  .actions {
+    justify-self: end;
+  }
+
+  .lang {
+    width: calc(36 * var(--n));
+    height: calc(28 * var(--n));
+    font-size: calc(11 * var(--n));
+  }
+
+  .contact {
+    display: flex;
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .nav {
+    background: rgb(246 241 234 / 0.96);
+  }
+}

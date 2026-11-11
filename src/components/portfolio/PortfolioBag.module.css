@@ -1,0 +1,52 @@
+.bag {
+  --width: 330;
+  --closed-top: 510;
+  --open-top: 650;
+  --open-scale: 0.89;
+
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--closed-top) * var(--u));
+  left: 50%;
+  width: calc(var(--width) * var(--u));
+  margin-left: calc(var(--width) * var(--u) / -2);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-origin: top center;
+  transition: transform 800ms var(--ease-out);
+}
+
+.bag[data-open="false"]:hover {
+  transform: translateY(calc(-8 * var(--u)));
+}
+
+.bag[data-open="true"] {
+  transform: translateY(calc((var(--open-top) - var(--closed-top)) * var(--u))) scale(var(--open-scale));
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (min-aspect-ratio: 1 / 1) {
+  .bag {
+    --width: 485;
+    --closed-top: 462;
+    --open-top: 480;
+    --open-scale: 1.1546;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bag {
+    transition: none;
+  }
+
+  .bag[data-open="false"]:hover {
+    transform: none;
+  }
+}

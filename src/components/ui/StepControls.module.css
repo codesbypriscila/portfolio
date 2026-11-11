@@ -1,0 +1,78 @@
+.controls {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button {
+  display: grid;
+  place-items: center;
+  width: calc(52 * var(--u));
+  height: calc(52 * var(--u));
+  padding: 0;
+  border: 1px solid rgb(56 37 31 / 0.25);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background-color 200ms linear,
+    color 200ms linear,
+    opacity 200ms linear;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.icon {
+  width: calc(18 * var(--u));
+  height: calc(18 * var(--u));
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(10 * var(--u));
+}
+
+.counter {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(15 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  white-space: pre;
+  color: var(--ink);
+}
+
+.bar {
+  position: relative;
+  display: block;
+  width: calc(224 * var(--u));
+  height: calc(2 * var(--u));
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform-origin: left center;
+  transition: transform 500ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    transition: none;
+  }
+}

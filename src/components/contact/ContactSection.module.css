@@ -1,0 +1,430 @@
+/*
+ * The envelope is drawn in its own pixels (--e): one pixel of the 520×340 envelope from the design.
+ * Opening: the seal fades, the flap folds back, the envelope slides down and the letter rises out of it.
+ */
+.scene {
+  --env-x: 15;
+  --env-y: 300;
+  --env-w: 360;
+  --open-shift: 120;
+  --hint-y: 568;
+  --e: calc(var(--u) * var(--env-w) / 520);
+  --shift: 0;
+
+  position: absolute;
+  inset: 0;
+}
+
+.scene[data-open="true"] {
+  --shift: var(--open-shift);
+}
+
+.floor,
+.envelope {
+  transform: translateY(calc(var(--shift) * var(--u)));
+}
+
+.floor {
+  transition: transform 800ms var(--ease-out) 150ms;
+}
+
+.envelope {
+  transition:
+    transform 800ms var(--ease-out) 150ms,
+    translate 400ms var(--ease-out);
+}
+
+.scene[data-open="false"] .floor {
+  transition-delay: 350ms;
+}
+
+.scene[data-open="false"] .envelope {
+  transition-delay: 350ms, 0ms;
+}
+
+.floor {
+  position: absolute;
+  top: calc((var(--env-y) + 346 * var(--env-w) / 520) * var(--u));
+  left: calc((var(--env-x) + 40 * var(--env-w) / 520) * var(--u));
+  width: calc(440 * var(--e));
+  height: calc(40 * var(--e));
+  border-radius: 50%;
+  background: rgb(56 37 31 / 0.25);
+  filter: blur(calc(30 * var(--e)));
+}
+
+.envelope {
+  position: absolute;
+  top: calc(var(--env-y) * var(--u));
+  left: calc(var(--env-x) * var(--u));
+  width: calc(520 * var(--e));
+  height: calc(340 * var(--e));
+  border-radius: calc(8 * var(--e));
+  box-shadow: 0 calc(18 * var(--e)) calc(36 * var(--e)) rgb(56 37 31 / 0.2);
+}
+
+.inside,
+.piece,
+.flapOuter,
+.flapInner {
+  position: absolute;
+  background-position: center;
+  background-size: cover;
+}
+
+/* Paper layers are only drawings: clicks go to the letter's links or to the toggle button. */
+.inside,
+.piece,
+.bottomShadow,
+.flapShadow,
+.seal {
+  pointer-events: none;
+}
+
+.inside {
+  inset: 0;
+  border-radius: inherit;
+  background-image: url("/images/contact/leather-inside.jpg");
+}
+
+/* Pocket: two side flaps and the bottom flap, in front of the letter. */
+.piece {
+  z-index: 3;
+  inset: 0;
+  filter: drop-shadow(0 0 calc(0.8 * var(--e)) rgb(26 14 8 / 0.45));
+}
+
+.left {
+  background-image: url("/images/contact/leather-mid.jpg");
+  clip-path: polygon(0 1.5%, 50.4% 53.5%, 0 98.5%);
+  border-radius: calc(8 * var(--e)) 0 0 calc(8 * var(--e));
+}
+
+.right {
+  background-image: url("/images/contact/leather-mid.jpg");
+  clip-path: polygon(100% 1.5%, 49.6% 53.5%, 100% 98.5%);
+  border-radius: 0 calc(8 * var(--e)) calc(8 * var(--e)) 0;
+}
+
+.bottomShadow {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  filter: drop-shadow(0 calc(-4 * var(--e)) calc(5 * var(--e)) rgb(0 0 0 / 0.35));
+}
+
+.bottom {
+  border-radius: 0 0 calc(8 * var(--e)) calc(8 * var(--e));
+  background-image: url("/images/contact/leather-dark.jpg");
+  clip-path: polygon(0 100%, 48% 45.6%, 50% 44.1%, 52% 45.6%, 100% 100%);
+  filter: none;
+}
+
+/* Top flap: folds back over its top edge; its inside shows once it is past halfway. */
+.flapShadow {
+  position: absolute;
+  z-index: 4;
+  inset: 0 0 auto;
+  height: calc(206 * var(--e));
+  perspective: calc(1400 * var(--e));
+  filter: drop-shadow(0 calc(6 * var(--e)) calc(6 * var(--e)) rgb(0 0 0 / 0.4));
+  transition: z-index 0s linear 650ms;
+}
+
+.flap {
+  position: absolute;
+  inset: 0;
+  transform-origin: top center;
+  transition: transform 550ms cubic-bezier(0.45, 0, 0.25, 1) 350ms;
+}
+
+.flapOuter,
+.flapInner {
+  inset: 0;
+  clip-path: polygon(0 0, 100% 0, 52% 97%, 50% 100%, 48% 97%);
+}
+
+.flapOuter {
+  background-image: url("/images/contact/leather-light.jpg");
+  transition: opacity 0s linear 625ms;
+}
+
+.flapInner {
+  background-image: url("/images/contact/leather-dark.jpg");
+  opacity: 0;
+  transition: opacity 0s linear 625ms;
+}
+
+.scene[data-open="true"] .flapShadow {
+  z-index: 1;
+  filter: none;
+  transition-delay: 300ms;
+}
+
+.scene[data-open="true"] .flap {
+  transform: rotateX(180deg);
+  transition-delay: 50ms;
+}
+
+.scene[data-open="true"] .flapOuter {
+  opacity: 0;
+  transition-delay: 300ms;
+}
+
+.scene[data-open="true"] .flapInner {
+  opacity: 1;
+  transition-delay: 300ms;
+}
+
+.seal {
+  position: absolute;
+  z-index: 5;
+  top: calc(166 * var(--e));
+  left: calc(226 * var(--e));
+  display: grid;
+  place-items: center;
+  width: calc(68 * var(--e));
+  height: calc(68 * var(--e));
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #f6c9d7 0%, #e295b0 42%, #c9728f 78%);
+  box-shadow: 0 calc(4 * var(--e)) calc(8 * var(--e)) rgb(56 37 31 / 0.25);
+  transition: opacity 200ms linear 850ms;
+}
+
+.sealRing {
+  display: grid;
+  place-items: center;
+  width: calc(50 * var(--e));
+  height: calc(50 * var(--e));
+  padding-top: calc(4 * var(--e));
+  border: calc(2 * var(--e)) solid rgb(184 96 126 / 0.5);
+  border-radius: 50%;
+  font-family: var(--font-script), cursive;
+  font-size: calc(40 * var(--e));
+  line-height: 1;
+  color: #fff;
+}
+
+.scene[data-open="true"] .seal {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+/* The letter lives in a slot that ends at the bottom of the envelope, so it is hidden while tucked in. */
+.slot {
+  position: absolute;
+  z-index: 2;
+  top: calc(-316 * var(--e));
+  left: calc(30 * var(--e));
+  width: calc(460 * var(--e));
+  height: calc(656 * var(--e));
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.letter {
+  height: calc(500 * var(--e));
+  padding: calc(34 * var(--e)) calc(36 * var(--e));
+  background: #fcfaf6;
+  box-shadow: 0 calc(6 * var(--e)) calc(18 * var(--e)) rgb(56 37 31 / 0.18);
+  color: var(--ink);
+  pointer-events: auto;
+  transform: translateY(calc(336 * var(--e)));
+  transition: transform 450ms cubic-bezier(0.55, 0, 0.75, 0.3);
+}
+
+.scene[data-open="true"] .letter {
+  transform: none;
+  transition: transform 850ms var(--ease-out) 550ms;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: calc(34 * var(--e));
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.041em;
+}
+
+.script {
+  font-family: var(--font-script), cursive;
+  font-size: calc(40 * var(--e));
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--ink-script);
+}
+
+.intro {
+  margin: calc(12 * var(--e)) 0 calc(18 * var(--e));
+  font-family: var(--font-body), sans-serif;
+  font-size: max(calc(13 * var(--e)), 11px);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-dim);
+}
+
+.links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links li + li {
+  border-top: 1px solid var(--sand);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: calc(14 * var(--e));
+  padding: calc(11 * var(--e)) 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: calc(40 * var(--e));
+  height: calc(40 * var(--e));
+  border-radius: calc(12 * var(--e));
+  color: #fff;
+  transition: transform 250ms var(--ease-out);
+}
+
+.icon svg {
+  width: calc(20 * var(--e));
+  height: calc(20 * var(--e));
+}
+
+.icon[data-icon="linkedin"] {
+  background: #0a66c2;
+}
+
+.icon[data-icon="mail"] {
+  background: #ea4335;
+}
+
+.icon[data-icon="instagram"] {
+  background: linear-gradient(45deg, #f58529 0%, #dd2a7b 55%, #8134af 100%);
+}
+
+.label {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: calc(2 * var(--e));
+  min-width: 0;
+}
+
+.name {
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: max(calc(16 * var(--e)), 13px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.handle {
+  overflow: hidden;
+  font-family: var(--font-body), sans-serif;
+  font-size: max(calc(12.5 * var(--e)), 11px);
+  font-weight: 500;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink-dim);
+}
+
+.arrow {
+  flex: none;
+  width: calc(16 * var(--e));
+  height: calc(16 * var(--e));
+  color: var(--ink-dim);
+  transition: transform 250ms var(--ease-out);
+}
+
+.link:hover .icon {
+  transform: scale(1.06);
+}
+
+.link:hover .arrow,
+.link:focus-visible .arrow {
+  color: var(--ink);
+  transform: translate(calc(2 * var(--e)), calc(-2 * var(--e)));
+}
+
+.link:hover .name {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+/* Click target: the whole envelope while closed, only the pocket once the letter is out. */
+.toggle {
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  cursor: pointer;
+}
+
+.scene[data-open="true"] .toggle {
+  top: 44%;
+}
+
+.scene[data-open="false"] .envelope:hover {
+  translate: 0 calc(-6 * var(--e));
+}
+
+.hint {
+  position: absolute;
+  top: calc(var(--hint-y) * var(--u));
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(13 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-align: center;
+  color: var(--ink-dim);
+  transition: opacity 300ms linear 400ms;
+}
+
+.scene[data-open="true"] .hint {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+@media (min-aspect-ratio: 1 / 1) {
+  .scene {
+    --env-x: 460;
+    --env-y: 322;
+    --env-w: 520;
+    --open-shift: 218;
+    --hint-y: 712;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floor,
+  .envelope,
+  .flap,
+  .letter,
+  .scene[data-open="true"] .letter {
+    transition-duration: 0ms;
+    transition-delay: 0ms;
+  }
+
+  .scene[data-open="false"] .envelope:hover {
+    translate: none;
+  }
+}

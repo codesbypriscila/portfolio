@@ -1,0 +1,106 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: calc(26 * var(--u));
+  border: 1px solid var(--sand);
+  border-radius: calc(18 * var(--u));
+  background: #fff;
+  box-shadow: 0 calc(18 * var(--u)) calc(36 * var(--u)) rgb(56 37 31 / 0.1);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: calc(28 * var(--u));
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.043em;
+  color: var(--ink-strong);
+}
+
+.number {
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(12 * var(--u));
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  color: var(--taupe);
+}
+
+.description {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(14 * var(--u));
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-dim);
+}
+
+.stack {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(12 * var(--u));
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--taupe);
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+}
+
+.row {
+  display: flex;
+  gap: calc(8 * var(--u));
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  padding: calc(8 * var(--u)) calc(13 * var(--u));
+  border: 1px solid rgb(56 37 31 / 0.25);
+  border-radius: 999px;
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(12 * var(--u));
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    background-color 200ms linear,
+    color 200ms linear;
+}
+
+.link[data-primary="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.link:hover {
+  background: var(--ink-dim);
+  border-color: var(--ink-dim);
+  color: var(--paper);
+}
+
+.icon {
+  width: calc(13 * var(--u));
+  height: calc(13 * var(--u));
+}

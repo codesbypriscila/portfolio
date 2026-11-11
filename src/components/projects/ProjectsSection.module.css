@@ -1,0 +1,57 @@
+.viewport {
+  --track-top: 214;
+  --center: 15;
+  --card-w: 360;
+  --card-h: 430;
+  --gap: 24;
+
+  position: absolute;
+  top: calc(var(--track-top) * var(--u));
+  left: 0;
+  width: 100%;
+  height: calc(var(--card-h) * var(--u));
+}
+
+.track {
+  display: flex;
+  gap: calc(var(--gap) * var(--u));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateX(calc((var(--center) - var(--index) * (var(--card-w) + var(--gap))) * var(--u)));
+}
+
+.track[data-animate="true"] {
+  transition: transform 700ms var(--ease-out);
+}
+
+.slide {
+  flex: none;
+  width: calc(var(--card-w) * var(--u));
+  height: calc(var(--card-h) * var(--u));
+}
+
+.controls {
+  top: calc(690 * var(--u));
+  left: calc(15 * var(--u));
+  width: calc(360 * var(--u));
+}
+
+@media (min-aspect-ratio: 1 / 1) {
+  .viewport {
+    --track-top: 250;
+    --center: 540;
+  }
+
+  .controls {
+    top: calc(716 * var(--u));
+    left: calc(520 * var(--u));
+    width: calc(400 * var(--u));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track[data-animate="true"] {
+    transition: none;
+  }
+}
