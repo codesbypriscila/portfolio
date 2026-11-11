@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={fontVariables}>
+    // data-locked: the page starts on the closed folder; picking a section unlocks scrolling (src/lib/explore.ts).
+    <html lang="en" className={fontVariables} data-locked="true" suppressHydrationWarning>
       <body>
         <LanguageProvider>{children}</LanguageProvider>
       </body>

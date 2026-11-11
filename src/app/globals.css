@@ -23,6 +23,13 @@ html {
   scroll-snap-type: y proximity;
 }
 
+/* Until a section is picked from the open folder, the visitor stays on the first screen. */
+html[data-locked],
+html[data-locked] body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

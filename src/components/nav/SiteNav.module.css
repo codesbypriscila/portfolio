@@ -22,7 +22,19 @@
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
 }
 
-.brand {
+.nav {
+  transition:
+    opacity 450ms var(--ease-out),
+    transform 650ms var(--ease-out);
+}
+
+.nav[data-visible="false"] {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-140%);
+}
+
+.spacer {
   display: none;
 }
 
@@ -166,14 +178,8 @@
     padding: calc(6 * var(--n)) calc(8 * var(--n)) calc(6 * var(--n)) calc(28 * var(--n));
   }
 
-  .brand {
+  .spacer {
     display: block;
-    justify-self: start;
-    font-family: var(--font-script), cursive;
-    font-size: calc(30 * var(--n));
-    line-height: 1;
-    color: var(--ink-script);
-    text-decoration: none;
   }
 
   .main {
@@ -210,5 +216,15 @@
 @supports not (backdrop-filter: blur(1px)) {
   .nav {
     background: rgb(246 241 234 / 0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav {
+    transition: opacity 150ms linear;
+  }
+
+  .nav[data-visible="false"] {
+    transform: none;
   }
 }
