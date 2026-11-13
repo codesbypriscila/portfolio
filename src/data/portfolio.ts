@@ -2,12 +2,6 @@ import type { PortfolioItem } from "@/types/portfolio";
 
 const imagePath = (name: string) => `/images/portfolio/${name}.png`;
 
-export const portfolioBagImage = {
-  src: imagePath("folder"),
-  width: 1120,
-  height: 965,
-};
-
 export const portfolioItems: readonly PortfolioItem[] = [
   {
     id: "about",
@@ -53,7 +47,7 @@ export const portfolioItems: readonly PortfolioItem[] = [
     id: "socials",
     href: "#contact",
     image: { src: imagePath("socials"), width: 698, height: 694, padding: 76 },
-    wide: { x: 1085, y: 655, width: 130, labelY: 738 },
+    wide: { x: 1125, y: 650, width: 130, labelY: 733 },
     tall: { x: 320, y: 515, width: 88, labelY: 585 },
     float: { duration: 5.8, delay: -1.9 },
   },
@@ -61,7 +55,7 @@ export const portfolioItems: readonly PortfolioItem[] = [
     id: "contact",
     href: "#contact",
     image: { src: imagePath("contact"), width: 557, height: 623, padding: 68 },
-    wide: { x: 355, y: 650, width: 125, labelY: 738 },
+    wide: { x: 315, y: 645, width: 125, labelY: 733 },
     tall: { x: 70, y: 515, width: 85, labelY: 585 },
     float: { duration: 6.2, delay: -3 },
   },

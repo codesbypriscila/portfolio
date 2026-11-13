@@ -9,17 +9,21 @@ interface FloatingItemProps {
   label: string;
   order: number;
   isOpen: boolean;
+  /** Replaces the default jump to the item's section (the CV item opens a dialog instead). */
+  onActivate?: () => void;
 }
 
-export function FloatingItem({ item, label, order, isOpen }: FloatingItemProps) {
+export function FloatingItem({ item, label, order, isOpen, onActivate }: FloatingItemProps) {
   return (
     <li className={styles.item} style={getItemStyle(item, order)} data-open={isOpen}>
       <a
         className={styles.link}
         href={item.href}
+        aria-haspopup={onActivate ? "dialog" : undefined}
         onClick={(event) => {
           event.preventDefault();
-          goToSection(item.href);
+          if (onActivate) onActivate();
+          else goToSection(item.href);
         }}
       >
         <span className={styles.float}>

@@ -1,15 +1,15 @@
 /*
  * The book area is placed in the section's design pixels (--u). Wide screens: a 409 × 409 spread
- * page on each side of the spine, as in the design. Portrait: one page at a time, almost full width.
+ * page on each side of the spine, as in the design. Portrait: one 328 × 544 sheet at a time.
  */
 .area {
-  --area-x: 15;
-  --area-y: 214;
-  --area-w: 360;
-  --area-h: 360;
-  --controls-x: 0;
-  --controls-y: 430;
-  --controls-w: 360;
+  --area-x: 34;
+  --area-y: 182;
+  --area-w: 328;
+  --area-h: 544;
+  --controls-x: -10;
+  --controls-y: 566;
+  --controls-w: 342;
 
   position: absolute;
   top: calc(var(--area-y) * var(--u));
@@ -81,11 +81,16 @@
   border-radius: 8px;
 }
 
-/* Leather boards, a little larger than the paper, like the design's open book. */
+/*
+ * Leather boards, the same 7 design pixels larger than the paper on every side, with the cream edge of
+ * the page stack showing between board and paper (as in the design's open book).
+ */
 .board {
+  --rim: calc(7 * var(--u));
+
   position: absolute;
-  top: -6px;
-  bottom: -5px;
+  top: calc(-1 * var(--rim));
+  bottom: calc(-1 * var(--rim));
   overflow: hidden;
   background: #4a2e22;
   box-shadow: 0 calc(26 * var(--u)) calc(50 * var(--u)) rgb(56 37 31 / 0.3);
@@ -97,18 +102,57 @@
 }
 
 .boardRight {
-  right: -6px;
+  right: calc(-1 * var(--rim));
   border-radius: 0 8px 8px 0;
 }
 
+/* Its right edge (set inline) meets the spine, so nothing shows between the two boards. */
 .boardLeft {
-  left: -6px;
+  left: calc(-1 * var(--rim));
   border-radius: 8px 0 0 8px;
+}
+
+/* Portrait: one board around the sheet, a little wider on the spine side. */
+.boardSingle {
+  --rim: calc(4 * var(--u));
+
+  right: calc(-1 * var(--rim));
+  left: calc(-10 * var(--u));
+  border-radius: 8px;
+}
+
+.edges {
+  position: absolute;
+  top: calc(4 * var(--u));
+  bottom: calc(4 * var(--u));
+  background: linear-gradient(to bottom, #e6dccb, #d6c9b5);
+}
+
+.edgesRight {
+  right: calc(4 * var(--u));
+  left: 0;
+  border-radius: 0 2px 2px 0;
+}
+
+.edgesLeft {
+  right: 0;
+  left: calc(4 * var(--u));
+  border-radius: 2px 0 0 2px;
 }
 
 .page {
   position: absolute;
   top: 0;
+}
+
+.fold {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  margin-left: -1px;
+  /* Same tone as the paper's gutter shading at the spine, a touch darker in the middle. */
+  background: linear-gradient(to right, #d7cbbb, #bfaf9c, #d7cbbb);
+  pointer-events: none;
 }
 
 .scaled {

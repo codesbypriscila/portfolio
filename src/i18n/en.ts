@@ -32,6 +32,14 @@ export const en = {
       socials: "Socials",
       contact: "Contact me",
     },
+    cv: {
+      script: "Download",
+      title: "my CV",
+      question: "Which language would you like it in? Both versions have the same content.",
+      format: "PDF · 1 page",
+      close: "Close",
+      languages: { es: "Spanish", en: "English" },
+    },
   },
   about: {
     label: "About me",
@@ -64,14 +72,6 @@ export const en = {
       ],
       note: "save it, pin it,\nbuild it",
     },
-    baking: {
-      script: "Something",
-      title: "sweet",
-      first:
-        "Away from the screen, you'll probably find me in the kitchen. I love to cook, and desserts are my favorite thing to make.",
-      second:
-        "Baking is one of the things I enjoy most in my free time. It's my favorite way to slow down and make something with my hands.",
-    },
     anime: {
       script: "And of course,",
       title: "anime",
@@ -88,6 +88,9 @@ export const en = {
     carouselRole: "carousel",
     previous: "Previous project",
     next: "Next project",
+    autoplay: "Auto-play · 5s",
+    pause: "Pause auto-play",
+    play: "Resume auto-play",
     repository: "View repository",
     demo: "Live demo",
     descriptions: {

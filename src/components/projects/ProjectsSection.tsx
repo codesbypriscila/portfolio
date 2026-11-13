@@ -1,7 +1,16 @@
 "use client";
 
-import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
+import {
+  type CSSProperties,
+  type MouseEvent,
+  type PointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Stage } from "@/components/stage/Stage";
+import { PauseIcon, PlayIcon } from "@/components/ui/Icons";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { StepControls } from "@/components/ui/StepControls";
 import { projects } from "@/data/projects";
@@ -14,16 +23,28 @@ const count = projects.length;
 const track = [...projects, ...projects, ...projects];
 const slideMs = 700;
 const autoplayMs = 5000;
+/* A horizontal drag longer than this (px) on a touch screen is a swipe. */
+const swipeMin = 40;
 
 const wrap = (i: number) => ((i % count) + count) % count;
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/**
+ * The projects carousel turns by itself every 5 s and can still be moved by hand: the arrows, a click on
+ * the cards at either side or a swipe. Moving it by hand restarts the timer; hovering, keyboard focus or
+ * the pause button stop it, and it never turns by itself with reduced motion.
+ */
 export function ProjectsSection() {
   const [index, setIndex] = useState(count);
   const [animate, setAnimate] = useState(true);
-  const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [stopped, setStopped] = useState(false);
+  const [restart, setRestart] = useState(0);
   const busy = useRef(false);
   const settle = useRef<number | undefined>(undefined);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const swipe = useRef<{ id: number; x: number; y: number } | null>(null);
+  const swiped = useRef(false);
 
   const go = useCallback((direction: 1 | -1) => {
     if (busy.current) return;
@@ -36,6 +57,15 @@ export function ProjectsSection() {
       busy.current = false;
     }, slideMs);
   }, []);
+
+  /** A move asked for by the visitor: it also restarts the autoplay timer. */
+  const move = useCallback(
+    (direction: 1 | -1) => {
+      go(direction);
+      setRestart((n) => n + 1);
+    },
+    [go],
+  );
 
   useEffect(() => () => window.clearTimeout(settle.current), []);
 
@@ -51,13 +81,48 @@ export function ProjectsSection() {
     return () => observer.disconnect();
   }, []);
 
+  const paused = hovered || stopped;
+
   useEffect(() => {
     if (!inView || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible") go(1);
     }, autoplayMs);
     return () => window.clearInterval(timer);
-  }, [inView, paused, go]);
+  }, [inView, paused, go, restart]);
+
+  /* A click beside the centred card moves the carousel towards that side instead of following a link. */
+  const onClickCapture = (e: MouseEvent<HTMLDivElement>) => {
+    if (swiped.current) {
+      swiped.current = false;
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    const activeCard = viewportRef.current?.querySelector<HTMLElement>("[data-active='true']");
+    if (!activeCard) return;
+    const { left, right } = activeCard.getBoundingClientRect();
+    if (e.clientX >= left && e.clientX <= right) return;
+    e.preventDefault();
+    e.stopPropagation();
+    move(e.clientX < left ? -1 : 1);
+  };
+
+  const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    swiped.current = false;
+    if (e.pointerType === "mouse") return;
+    swipe.current = { id: e.pointerId, x: e.clientX, y: e.clientY };
+  };
+
+  const onPointerUp = (e: PointerEvent<HTMLDivElement>) => {
+    const start = swipe.current;
+    swipe.current = null;
+    if (!start || start.id !== e.pointerId) return;
+    const dx = e.clientX - start.x;
+    if (Math.abs(dx) < swipeMin || Math.abs(dx) < Math.abs(e.clientY - start.y)) return;
+    swiped.current = true;
+    move(dx < 0 ? 1 : -1);
+  };
 
   const active = wrap(index);
   const { t } = useLanguage();
@@ -67,14 +132,21 @@ export function ProjectsSection() {
       <SectionTitle script={t.projects.script} title={t.projects.title} />
 
       <div
+        ref={viewportRef}
         className={styles.viewport}
         role="region"
         aria-roledescription={t.projects.carouselRole}
         aria-label={t.projects.carousel}
-        onPointerEnter={() => setPaused(true)}
-        onPointerLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
+        onPointerEnter={(e) => e.pointerType === "mouse" && setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => {
+          swipe.current = null;
+        }}
+        onClickCapture={onClickCapture}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}
       >
         <ul
           className={styles.track}
@@ -87,6 +159,7 @@ export function ProjectsSection() {
               <li
                 key={`${project.id}-${position}`}
                 className={styles.slide}
+                data-active={position === index}
                 aria-hidden={!isOriginal}
                 inert={!isOriginal}
               >
@@ -103,9 +176,23 @@ export function ProjectsSection() {
         progress={(active + 1) / count}
         prevLabel={t.projects.previous}
         nextLabel={t.projects.next}
-        onPrev={() => go(-1)}
-        onNext={() => go(1)}
+        onPrev={() => move(-1)}
+        onNext={() => move(1)}
       />
+
+      <div className={styles.autoplay}>
+        <button
+          type="button"
+          className={styles.pause}
+          onClick={() => setStopped((s) => !s)}
+          aria-label={stopped ? t.projects.play : t.projects.pause}
+        >
+          {stopped ? <PlayIcon className={styles.pauseIcon} /> : <PauseIcon className={styles.pauseIcon} />}
+        </button>
+        <span className={styles.autoplayLabel} data-stopped={stopped}>
+          {t.projects.autoplay}
+        </span>
+      </div>
     </Stage>
   );
 }

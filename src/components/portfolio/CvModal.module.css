@@ -1,0 +1,209 @@
+/* "Download my CV" dialog, as designed in portfolio.pen (Download CV - Modal). */
+.dialog {
+  width: min(500px, calc(100vw - 32px));
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: #fcfaf6;
+  color: var(--ink);
+  box-shadow:
+    0 30px 60px rgb(56 37 31 / 0.25),
+    0 2px 6px rgb(56 37 31 / 0.1);
+}
+
+.dialog::backdrop {
+  background: rgb(56 37 31 / 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.dialog[open] {
+  animation: rise 360ms var(--ease-out);
+}
+
+.dialog[open]::backdrop {
+  animation: fade 300ms linear;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 34px 34px 30px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--ink-strong);
+}
+
+.script {
+  font-family: var(--font-script), cursive;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--ink-script);
+}
+
+.close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgb(56 37 31 / 0.2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background-color 200ms linear,
+    color 200ms linear;
+}
+
+.close:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.closeIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.question {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-dim);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--sand);
+  border-radius: 16px;
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    transform 300ms var(--ease-out),
+    box-shadow 300ms var(--ease-out);
+}
+
+.option[data-primary="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.option:hover {
+  box-shadow: 0 10px 22px rgb(56 37 31 / 0.16);
+  transform: translateY(-2px);
+}
+
+.optionTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.code {
+  font-family: var(--font-body), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+}
+
+.option[data-primary="true"] .code {
+  color: var(--sand);
+}
+
+.downloadIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.language {
+  font-family: var(--font-title), Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.format {
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  color: var(--ink-dim);
+}
+
+.option[data-primary="true"] .format {
+  color: #d9cbbb;
+}
+
+/* Narrow phones: the two versions stack. */
+@media (max-width: 380px) {
+  .card {
+    padding: 28px 22px 24px;
+  }
+
+  .options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog[open],
+  .dialog[open]::backdrop {
+    animation: none;
+  }
+
+  .option,
+  .close {
+    transition: none;
+  }
+
+  .option:hover {
+    transform: none;
+  }
+}

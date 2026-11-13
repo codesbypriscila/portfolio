@@ -4,30 +4,27 @@ import { animate, motion, useInView, useMotionValue, useScroll, useTransform } f
 import Image from "next/image";
 import { type KeyboardEvent, type PointerEvent, type ReactNode, useEffect, useMemo, useRef } from "react";
 import { StepControls } from "@/components/ui/StepControls";
-import { aboutImages, bookPageCount } from "@/data/about";
+import { aboutImages } from "@/data/about";
 import { useElementWidth } from "@/hooks/useElementWidth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { type FlipDirection, usePageFlip } from "@/hooks/usePageFlip";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import styles from "./AboutBook.module.css";
-import { BlankPage, BookPage, pageCount } from "./BookPages";
+import { BlankPage, BookPage, pageCounts, singlePage, spreadPage } from "./BookPages";
 import { TurningLeaf } from "./TurningLeaf";
-
-/** Pages are authored at the design's 409 px and scaled to the book's size. */
-const PAGE_BASE = 409;
-const TOTAL = pageCount + 1;
 
 interface Leaf {
   front: number | null;
   back: number | null;
 }
 
-/** Wide screens: leaf n carries pages (2n, 2n+1). Portrait: every page is its own leaf. */
+/** Wide screens: leaf n carries pages (2n, 2n+1). Portrait: every sheet is its own leaf. */
 function buildLeaves(single: boolean): Leaf[] {
-  if (single) return Array.from({ length: TOTAL }, (_, i) => ({ front: i, back: null }));
-  return Array.from({ length: Math.ceil(TOTAL / 2) }, (_, n) => ({
+  const total = (single ? pageCounts.single : pageCounts.spread) + 1;
+  if (single) return Array.from({ length: total }, (_, i) => ({ front: i, back: null }));
+  return Array.from({ length: Math.ceil(total / 2) }, (_, n) => ({
     front: 2 * n,
-    back: 2 * n + 1 < TOTAL ? 2 * n + 1 : null,
+    back: 2 * n + 1 < total ? 2 * n + 1 : null,
   }));
 }
 
@@ -56,10 +53,14 @@ export function AboutBook() {
   );
 }
 
+/** `size` is the width of one page; single sheets are taller than they are wide. */
 function Book({ single, size }: { single: boolean; size: number }) {
   const { t } = useLanguage();
   const leaves = useMemo(() => buildLeaves(single), [single]);
-  // The last leaf never turns: the book ends on pages 7–8 (or page 8 alone).
+  const base = single ? singlePage : spreadPage;
+  const height = (size * base.height) / base.width;
+  const pageCount = single ? pageCounts.single : pageCounts.spread;
+  // The last leaf never turns: the book ends on its last spread (or its last sheet).
   const turnable = leaves.length - 1;
   const flip = usePageFlip({ leafCount: turnable });
 
@@ -71,10 +72,10 @@ function Book({ single, size }: { single: boolean; size: number }) {
   const pad = (n: number) => String(n).padStart(2, "0");
   const counter =
     flip.current === 0
-      ? `${t.about.cover}  /  ${bookPageCount}`
+      ? `${t.about.cover}  /  ${single ? pad(pageCount) : pageCount}`
       : single
-        ? `${pad(flip.current)}  /  ${bookPageCount}`
-        : `${pad(flip.current * 2 - 1)} — ${pad(flip.current * 2)}  /  ${bookPageCount}`;
+        ? `${pad(flip.current)}  /  ${pad(pageCount)}`
+        : `${pad(flip.current * 2 - 1)} — ${pad(flip.current * 2)}  /  ${pageCount}`;
 
   const next = () => {
     interacted.current = true;
@@ -201,9 +202,9 @@ function Book({ single, size }: { single: boolean; size: number }) {
   const page = (index: number | null | undefined): ReactNode =>
     index === null || index === undefined ? <BlankPage /> : <BookPage index={index} single={single} />;
 
-  const scale = size / PAGE_BASE;
+  const scale = size / base.width;
   const scaled = (node: ReactNode) => (
-    <div className={styles.scaled} style={{ width: PAGE_BASE, height: PAGE_BASE, transform: `scale(${scale})` }}>
+    <div className={styles.scaled} style={{ width: base.width, height: base.height, transform: `scale(${scale})` }}>
       {node}
     </div>
   );
@@ -226,7 +227,7 @@ function Book({ single, size }: { single: boolean; size: number }) {
 
         <motion.div
           className={styles.tilt}
-          style={{ width: bookWidth, height: size, rotateX: tilt, y: lift }}
+          style={{ width: bookWidth, height, rotateX: tilt, y: lift }}
         >
           <motion.div
             ref={bookRef}
@@ -243,17 +244,23 @@ function Book({ single, size }: { single: boolean; size: number }) {
             style={{ x: bookX }}
           >
             {/* Leather boards behind the paper */}
-            <span aria-hidden className={`${styles.board} ${styles.boardRight}`} style={{ left: spineLeft }}>
-              <Image src={aboutImages.leather.src} fill sizes="30vw" quality={80} alt="" draggable={false} />
+            <span
+              aria-hidden
+              className={`${styles.board} ${single ? styles.boardSingle : styles.boardRight}`}
+              style={{ left: single ? undefined : spineLeft }}
+            >
+              <Image src={aboutImages.leather.src} fill sizes="30vw" quality={90} alt="" draggable={false} />
+              {showLeft && <span className={`${styles.edges} ${styles.edgesRight}`} />}
             </span>
             {showLeft && (
-              <span aria-hidden className={`${styles.board} ${styles.boardLeft}`} style={{ width: size }}>
-                <Image src={aboutImages.leather.src} fill sizes="30vw" quality={80} alt="" draggable={false} />
+              <span aria-hidden className={`${styles.board} ${styles.boardLeft}`} style={{ right: `calc(100% - ${size}px)` }}>
+                <Image src={aboutImages.leather.src} fill sizes="30vw" quality={90} alt="" draggable={false} />
+                <span className={`${styles.edges} ${styles.edgesLeft}`} />
               </span>
             )}
 
             {!single && leftLeaf >= 0 && (
-              <div className={styles.page} style={{ left: 0, width: size, height: size }}>
+              <div className={styles.page} style={{ left: 0, width: size, height }}>
                 {scaled(page(leaves[leftLeaf]?.back))}
                 <div className={styles.castClip}>
                   <motion.div
@@ -266,7 +273,7 @@ function Book({ single, size }: { single: boolean; size: number }) {
             )}
 
             {rightPage && (
-              <div className={styles.page} style={{ left: spineLeft, width: size, height: size }}>
+              <div className={styles.page} style={{ left: spineLeft, width: size, height }}>
                 {scaled(page(rightPage.front))}
                 <div className={styles.castClip}>
                   <motion.div
@@ -275,17 +282,22 @@ function Book({ single, size }: { single: boolean; size: number }) {
                     style={{ left: rightCastLeft, opacity: turn ? castOpacity : 0 }}
                   />
                 </div>
-                {!turn && rightLeaf > 0 && rightLeaf < turnable && <span aria-hidden className={styles.peel} />}
+                {/* Single sheets fill their page with words, so the lifted corner only shows on a spread. */}
+                {!single && !turn && rightLeaf > 0 && rightLeaf < turnable && <span aria-hidden className={styles.peel} />}
               </div>
             )}
 
+            {/* Fold line over the seam between the two pages, so no board shows through it. */}
+            {showLeft && <span aria-hidden className={styles.fold} style={{ left: spineLeft, height }} />}
+
             {turn && turning && (
-              <div className={styles.turning} style={{ left: spineLeft, width: size, height: size }}>
+              <div className={styles.turning} style={{ left: spineLeft, width: size, height }}>
                 <TurningLeaf
                   progress={flip.progress}
                   dir={turn.dir}
-                  size={size}
-                  base={PAGE_BASE}
+                  width={size}
+                  height={height}
+                  base={base}
                   front={page(turning.front)}
                   back={single ? <BlankPage /> : page(turning.back)}
                 />

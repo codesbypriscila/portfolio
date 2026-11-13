@@ -1,8 +1,10 @@
+/* The folder is drawn in a 460 × 360 box (see portfolio.pen); --f is one of its pixels. */
 .bag {
   --width: 330;
-  --closed-top: 510;
+  --closed-top: 520;
   --open-top: 650;
   --open-scale: 0.89;
+  --f: calc(var(--width) * var(--u) / 460);
 
   position: absolute;
   z-index: 2;
@@ -26,23 +28,72 @@
   transform: translateY(calc((var(--open-top) - var(--closed-top)) * var(--u))) scale(var(--open-scale));
 }
 
-.image {
+.folder {
+  position: relative;
   display: block;
   width: 100%;
-  height: auto;
+  aspect-ratio: 460 / 360;
+}
+
+.back {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 calc(22 * var(--f)) calc(23 * var(--f)) rgb(56 37 31 / 0.22))
+    drop-shadow(0 2px 2.5px rgb(56 37 31 / 0.18));
+}
+
+/* The dark inside of the folder, only seen once the front drops. */
+.inside {
+  position: absolute;
+  top: calc(38 * var(--f));
+  right: calc(10 * var(--f));
+  left: calc(10 * var(--f));
+  height: calc(120 * var(--f));
+  border-radius: calc(10 * var(--f));
+  background: linear-gradient(to bottom, #2a1a15, rgb(36 22 15 / 0));
+  opacity: 0;
+  transition: opacity 500ms var(--ease-out);
+}
+
+.front {
+  position: absolute;
+  top: calc(36 * var(--f));
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: calc(16 * var(--f));
+  background: linear-gradient(to bottom, #563a2f, #4a3027 35%, #432b22);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    0 -1px 3px rgb(26 15 11 / 0.25);
+  transition: top 800ms var(--ease-out);
+}
+
+.bag[data-open="true"] .inside {
+  opacity: 1;
+}
+
+.bag[data-open="true"] .front {
+  top: calc(150 * var(--f));
 }
 
 @media (min-aspect-ratio: 1 / 1) {
   .bag {
-    --width: 485;
-    --closed-top: 462;
+    --width: 460;
+    --closed-top: 474;
     --open-top: 480;
-    --open-scale: 1.1546;
+    --open-scale: 1.2174;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bag {
+  .bag,
+  .inside,
+  .front {
     transition: none;
   }
 

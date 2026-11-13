@@ -1,4 +1,7 @@
-/* A page is authored at 409 × 409 px (the design's page) and scaled as a whole by the book. */
+/*
+ * A page is authored in the design's pixels and scaled as a whole by the book: 409 × 409 on a spread,
+ * 328 × 544 for the single sheets shown on portrait screens.
+ */
 .page {
   --p: 1px;
 
@@ -8,12 +11,70 @@
   color: var(--ink);
 }
 
+/* Cream paper that darkens softly towards the spine, with a faint fold line on the spine edge. */
 .paper {
+  --gutter: rgb(90 69 54 / 0.14);
+  --curve: #ebe1d1;
+
+  background-color: #f8f3ea;
+}
+
+.paperLeft {
+  background-image:
+    linear-gradient(to right, transparent calc(100% - 36 * var(--p)), var(--gutter)),
+    linear-gradient(to right, rgb(235 225 209 / 0) 62%, var(--curve));
+  box-shadow: inset -1px 0 0 rgb(185 168 146 / 0.4);
+}
+
+.paperRight {
+  background-image:
+    linear-gradient(to left, transparent calc(100% - 36 * var(--p)), var(--gutter)),
+    linear-gradient(to left, rgb(235 225 209 / 0) 62%, var(--curve));
+  box-shadow: inset 1px 0 0 rgb(185 168 146 / 0.4);
+}
+
+/* A single sheet stacks its pictures and words, as in the design's mobile pages. */
+.sheet {
   position: absolute;
   inset: 0;
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(14 * var(--p));
+  padding: calc(26 * var(--p)) calc(22 * var(--p)) calc(24 * var(--p)) calc(26 * var(--p));
+}
+
+.pictures {
+  display: flex;
+  justify-content: center;
+  padding: calc(4 * var(--p)) 0 calc(6 * var(--p));
+}
+
+.picturesRow {
+  align-items: flex-end;
+  gap: calc(4 * var(--p));
+  padding-bottom: calc(8 * var(--p));
+}
+
+.inline {
+  position: relative;
+  flex: none;
+}
+
+.tiltedCenter {
+  transform: rotate(var(--r));
+}
+
+.compact .sources {
+  gap: calc(12 * var(--p));
+  margin-top: calc(12 * var(--p));
+}
+
+.caption.captionSmall {
+  font-size: calc(24 * var(--p));
+}
+
+.thanks.thanksSheet {
+  margin-top: calc(22 * var(--p));
 }
 
 .cover {
@@ -21,6 +82,7 @@
   inset: 0;
   border-radius: 0 6px 6px 0;
   object-fit: cover;
+  object-position: left center;
   pointer-events: none;
   user-select: none;
 }

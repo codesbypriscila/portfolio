@@ -34,6 +34,14 @@ export const es: Dictionary = {
       socials: "Redes",
       contact: "Contáctame",
     },
+    cv: {
+      script: "Descarga",
+      title: "mi CV",
+      question: "¿En qué idioma lo quieres? Las dos versiones tienen el mismo contenido.",
+      format: "PDF · 1 página",
+      close: "Cerrar",
+      languages: { es: "Español", en: "Inglés" },
+    },
   },
   about: {
     label: "Sobre mí",
@@ -66,14 +74,6 @@ export const es: Dictionary = {
       ],
       note: "guarda, pinea,\ncrea",
     },
-    baking: {
-      script: "Algo",
-      title: "dulce",
-      first:
-        "Lejos de la pantalla, casi siempre estoy en la cocina. Me encanta cocinar, y los postres son lo que más disfruto hacer.",
-      second:
-        "Hornear es una de las cosas que más disfruto en mi tiempo libre. Es mi forma favorita de ir con calma y crear algo con mis propias manos.",
-    },
     anime: {
       script: "Y por supuesto,",
       title: "el anime",
@@ -90,6 +90,9 @@ export const es: Dictionary = {
     carouselRole: "carrusel",
     previous: "Proyecto anterior",
     next: "Proyecto siguiente",
+    autoplay: "Giro automático · 5 s",
+    pause: "Pausar el giro automático",
+    play: "Reanudar el giro automático",
     repository: "Ver repositorio",
     demo: "Ver demo",
     descriptions: {

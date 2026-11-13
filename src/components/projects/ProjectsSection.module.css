@@ -31,10 +31,66 @@
   height: calc(var(--card-h) * var(--u));
 }
 
+/* The cards beside the centred one move the carousel when clicked. */
+.slide[data-active="false"] {
+  cursor: pointer;
+}
+
 .controls {
   top: calc(690 * var(--u));
   left: calc(15 * var(--u));
   width: calc(360 * var(--u));
+}
+
+/* Pause button and label under the controls: the carousel turns by itself every 5 s. */
+.autoplay {
+  position: absolute;
+  top: calc(var(--autoplay-top, 758) * var(--u));
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(10 * var(--u));
+  width: 100%;
+}
+
+.pause {
+  display: grid;
+  place-items: center;
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+  padding: 0;
+  border: 1px solid rgb(56 37 31 / 0.2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background-color 200ms linear,
+    color 200ms linear;
+}
+
+.pause:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.pauseIcon {
+  width: calc(12 * var(--u));
+  height: calc(12 * var(--u));
+}
+
+.autoplayLabel {
+  font-family: var(--font-body), sans-serif;
+  font-size: calc(12 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  transition: opacity 200ms linear;
+}
+
+.autoplayLabel[data-stopped="true"] {
+  opacity: 0.5;
 }
 
 @media (min-aspect-ratio: 1 / 1) {
@@ -47,6 +103,10 @@
     top: calc(716 * var(--u));
     left: calc(520 * var(--u));
     width: calc(400 * var(--u));
+  }
+
+  .autoplay {
+    --autoplay-top: 790;
   }
 }
 

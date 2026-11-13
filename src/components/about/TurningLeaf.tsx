@@ -15,10 +15,12 @@ const SEAM = 0.75;
 interface TurningLeafProps {
   progress: MotionValue<number>;
   dir: FlipDirection;
-  /** Rendered page size in px (square). */
-  size: number;
-  /** Size the page content is authored at; content is scaled to `size`. */
-  base: number;
+  /** Rendered page width in px. */
+  width: number;
+  /** Rendered page height in px. */
+  height: number;
+  /** Size the page content is authored at; content is scaled to `width`. */
+  base: { width: number; height: number };
   front: ReactNode;
   back: ReactNode;
 }
@@ -30,9 +32,9 @@ const rad = (deg: number) => (deg * Math.PI) / 180;
  * the first rotates around the spine and each next strip adds a little rotation, so the outer edge
  * leads or lags like real paper. Every strip shows its slice of the front and back page.
  */
-export function TurningLeaf({ progress, dir, size, base, front, back }: TurningLeafProps) {
-  const strip = size / SEGMENTS;
-  const scale = size / base;
+export function TurningLeaf({ progress, dir, width, height, base, front, back }: TurningLeafProps) {
+  const strip = width / SEGMENTS;
+  const scale = width / base.width;
 
   const bend = useTransform(progress, (p) => Math.sin(p * Math.PI) * MAX_BEND);
   const rootAngle = useTransform(() => -180 * progress.get() + (dir * bend.get()) / 2);
@@ -43,7 +45,8 @@ export function TurningLeaf({ progress, dir, size, base, front, back }: TurningL
       key={i}
       index={i}
       strip={strip}
-      size={size}
+      width={width}
+      height={height}
       scale={scale}
       base={base}
       angle={i === 0 ? rootAngle : stepAngle}
@@ -65,9 +68,10 @@ export function TurningLeaf({ progress, dir, size, base, front, back }: TurningL
 interface StripProps {
   index: number;
   strip: number;
-  size: number;
+  width: number;
+  height: number;
   scale: number;
-  base: number;
+  base: { width: number; height: number };
   /** Rotation relative to the parent strip. */
   angle: MotionValue<number>;
   absoluteAngle: MotionValue<number>;
@@ -77,7 +81,7 @@ interface StripProps {
   child: ReactNode;
 }
 
-function Strip({ index, strip, size, scale, base, angle, absoluteAngle, stepAngle, front, back, child }: StripProps) {
+function Strip({ index, strip, width, height, scale, base, angle, absoluteAngle, stepAngle, front, back, child }: StripProps) {
   // Absolute angle of this strip (0 = flat on the right, −180 = flat on the left).
   const abs = useTransform(() => absoluteAngle.get() + index * stepAngle.get());
   // Faces darken as they turn edge-on to the viewer.
@@ -88,7 +92,7 @@ function Strip({ index, strip, size, scale, base, angle, absoluteAngle, stepAngl
   const content = (node: ReactNode, offset: number) => (
     <div
       className={styles.scaled}
-      style={{ width: base, height: base, transform: `translateX(${-offset}px) scale(${scale})` }}
+      style={{ width: base.width, height: base.height, transform: `translateX(${-offset}px) scale(${scale})` }}
     >
       {node}
     </div>
@@ -97,7 +101,7 @@ function Strip({ index, strip, size, scale, base, angle, absoluteAngle, stepAngl
   return (
     <motion.div
       className={styles.strip}
-      style={{ left: index === 0 ? 0 : strip, width: strip, height: size, rotateY: angle }}
+      style={{ left: index === 0 ? 0 : strip, width: strip, height, rotateY: angle }}
     >
       <div className={styles.face} style={{ left: -SEAM, right: -SEAM }}>
         {content(front, index * strip - SEAM)}
@@ -105,7 +109,7 @@ function Strip({ index, strip, size, scale, base, angle, absoluteAngle, stepAngl
         <motion.div aria-hidden className={styles.sheen} style={{ opacity: sheen }} />
       </div>
       <div className={styles.face} style={{ left: -SEAM, right: -SEAM, transform: "rotateY(180deg)" }}>
-        {content(back, size - (index + 1) * strip - SEAM)}
+        {content(back, width - (index + 1) * strip - SEAM)}
         <motion.div aria-hidden className={styles.shade} style={{ opacity: backShade }} />
       </div>
       {child}
